@@ -134,9 +134,4 @@ export async function POST(req: Request) {
 	}
 }
 
-export const config = {
-	api: {
-		bodyParser: false,
-	},
-	runtime: "edge",
-};
+export const runtime = "edge";
