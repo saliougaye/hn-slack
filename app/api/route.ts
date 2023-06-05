@@ -11,6 +11,19 @@ const hnApi = "https://hacker-news.firebaseio.com/v0";
 
 export async function POST(req: Request) {
 	try {
+		// check secret
+		const url = new URL(req.url);
+		const secret = url.searchParams.get("secret");
+		if (secret !== env.SECRET) {
+			return NextResponse.json(
+				{
+					message: "Unauthorized",
+				},
+				{
+					status: 401,
+				}
+			);
+		}
 		// fetch topstories
 		const { statusCode, body } = await request(`${hnApi}/topstories.json`);
 
@@ -120,3 +133,10 @@ export async function POST(req: Request) {
 		);
 	}
 }
+
+export const config = {
+	api: {
+		bodyParser: false,
+	},
+	runtime: "edge",
+};

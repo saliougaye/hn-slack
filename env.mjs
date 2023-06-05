@@ -8,5 +8,6 @@ export const env = createEnv({
         SLACK_BOT_TOKEN: z.string(),
         SLACK_SIGNING_SECRET: z.string(),
         SLACK_CHANNEL: z.string(),
+        SECRET: z.string()
     }
 });
