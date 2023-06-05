@@ -1,6 +1,6 @@
 import { ColumnType, Kysely } from "kysely";
 import { PlanetScaleDialect } from "kysely-planetscale";
-import env from "../env.mjs";
+import { env } from "../env.mjs";
 
 export interface Database {
 	news: {
