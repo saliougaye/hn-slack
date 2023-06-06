@@ -16,6 +16,7 @@ export async function POST(req: Request) {
 		const url = new URL(req.url);
 		const secret = url.searchParams.get("secret");
 		if (secret !== env.SECRET) {
+			console.log("unauthorized")
 			return NextResponse.json(
 				{
 					message: "Unauthorized",
