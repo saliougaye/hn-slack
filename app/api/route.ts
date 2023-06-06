@@ -91,30 +91,34 @@ export async function POST(req: Request) {
 		) as PromiseFulfilledResult<z.infer<typeof newsValidation>>[];
 
 		// cache news
-		await db
-			.insertInto("news")
-			.values(
-				topNews.map(({ value }) => ({
-					id: value.id,
-					score: value.score,
-					title: value.title,
-					url: value.url,
-					published_at: dayjs(value.time * 1000).format("YYYY-MM-DD hh:mm:ss"),
-				}))
-			)
-			.execute();
+		if (topNews.length > 0) {
+			await db
+				.insertInto("news")
+				.values(
+					topNews.map(({ value }) => ({
+						id: value.id,
+						score: value.score,
+						title: value.title,
+						url: value.url,
+						published_at: dayjs(value.time * 1000).format(
+							"YYYY-MM-DD hh:mm:ss"
+						),
+					}))
+				)
+				.execute();
 
-		// send to slack
-		const chunkedBlocks = chunkArray(
-			buildBlocks(topNews.map((el) => el.value)),
-			50
-		);
+			// send to slack
+			const chunkedBlocks = chunkArray(
+				buildBlocks(topNews.map((el) => el.value)),
+				50
+			);
 
-		for (const blocks of chunkedBlocks) {
-			await slackApi.client.chat.postMessage({
-				channel: env.SLACK_CHANNEL,
-				blocks,
-			});
+			for (const blocks of chunkedBlocks) {
+				await slackApi.client.chat.postMessage({
+					channel: env.SLACK_CHANNEL,
+					blocks,
+				});
+			}
 		}
 
 		// return response
