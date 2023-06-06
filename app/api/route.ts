@@ -6,7 +6,6 @@ import { newsValidation, topstoriesBodyValidation } from "../validation";
 import { buildBlocks, chunkArray, slackApi } from "../utils";
 import { env } from "../../env.mjs";
 import dayjs from "dayjs";
-import { verifySignature } from "@upstash/qstash/nextjs";
 
 const hnApi = "https://hacker-news.firebaseio.com/v0";
 
