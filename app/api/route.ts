@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 const hnApi = "https://hacker-news.firebaseio.com/v0";
 
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
 	try {
 		// check secret
 		const url = new URL(req.url);
