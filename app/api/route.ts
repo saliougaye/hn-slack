@@ -9,14 +9,13 @@ import dayjs from "dayjs";
 
 const hnApi = "https://hacker-news.firebaseio.com/v0";
 
-
 export async function POST(req: Request) {
 	try {
 		// check secret
 		const url = new URL(req.url);
 		const secret = url.searchParams.get("secret");
 		if (secret !== env.SECRET) {
-			console.log("unauthorized")
+			console.log("unauthorized");
 			return NextResponse.json(
 				{
 					message: "Unauthorized",
@@ -106,13 +105,17 @@ export async function POST(req: Request) {
 			.execute();
 
 		// send to slack
-		const blocks = buildBlocks(topNews.map((el) => el.value));
+		const chunkedBlocks = chunkArray(
+			buildBlocks(topNews.map((el) => el.value)),
+			50
+		);
 
-		const chunkedBlocks = chunkArray(blocks, 50);
-		await slackApi.client.chat.postMessage({
-			channel: env.SLACK_CHANNEL,
-			blocks,
-		});
+		for (const blocks of chunkedBlocks) {
+			await slackApi.client.chat.postMessage({
+				channel: env.SLACK_CHANNEL,
+				blocks,
+			});
+		}
 
 		// return response
 		return NextResponse.json(
