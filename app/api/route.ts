@@ -106,6 +106,8 @@ export async function POST(req: Request) {
 
 		// send to slack
 		const blocks = buildBlocks(topNews.map((el) => el.value));
+
+		const chunkedBlocks = chunkArray(blocks, 50);
 		await slackApi.client.chat.postMessage({
 			channel: env.SLACK_CHANNEL,
 			blocks,
