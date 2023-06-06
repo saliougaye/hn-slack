@@ -12,9 +12,21 @@ const hnApi = "https://hacker-news.firebaseio.com/v0";
 export async function POST(req: Request) {
 	try {
 		// check secret
-		const url = new URL(req.url);
-		const secret = url.searchParams.get("secret");
-		if (secret !== env.SECRET) {
+		const authHeader = req.headers.get("authorization");
+
+		if (!authHeader) {
+			return NextResponse.json(
+				{
+					message: "Unauthorized",
+				},
+				{
+					status: 401,
+				}
+			);
+		}
+
+		const token = authHeader.split(" ")[1];
+		if (token !== env.SECRET) {
 			console.log("unauthorized");
 			return NextResponse.json(
 				{
