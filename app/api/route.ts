@@ -6,10 +6,12 @@ import { newsValidation, topstoriesBodyValidation } from "../validation";
 import { buildBlocks, chunkArray, slackApi } from "../utils";
 import { env } from "../../env.mjs";
 import dayjs from "dayjs";
+import { verifySignature } from "@upstash/qstash/nextjs";
 
 const hnApi = "https://hacker-news.firebaseio.com/v0";
 
-export async function POST(req: Request) {
+
+export async function GET(req: Request) {
 	try {
 		// check secret
 		const url = new URL(req.url);
@@ -89,7 +91,6 @@ export async function POST(req: Request) {
 			(el) => el.status === "fulfilled" && el.value.score >= 140
 		) as PromiseFulfilledResult<z.infer<typeof newsValidation>>[];
 
-		topNews = [topNews[0]];
 		// cache news
 		await db
 			.insertInto("news")
